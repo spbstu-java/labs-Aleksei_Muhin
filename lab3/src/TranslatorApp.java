@@ -5,11 +5,12 @@ import java.util.Map;
 public class TranslatorApp {
     public static void main(String[] args) {
         try {
-            // Укажите полный путь к файлу dictionary.txt
-            String dictionaryFilePath = "D:\\ProgramJaVa\\lab 3\\src\\dictionary.txt";
+
+            String dictionaryFilePath = "lab3/src" + File.separator + "dictionary.txt";
 
             Map<String, String> dictionary = readDictionary(dictionaryFilePath);
-            String inputFile = "D:\\ProgramJaVa\\lab 3\\src\\input.txt";
+
+            String inputFile = "lab3/src" + File.separator + "input.txt";
 
             try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
                 String line;
