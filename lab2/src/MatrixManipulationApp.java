@@ -2,11 +2,23 @@ import java.io.*;
 import java.util.Random;
 
 public class MatrixManipulationApp {
+    private static final int MAX_MATRIX_SIZE = 1000000;
+
     public static void main(String[] args) {
         try {
-            int size = readMatrixSize("D:\\ProgramJaVa\\lab 2\\src\\matrix_size.txt");
+            String basePath = "lab2/src";  // Adjust this base path according to your project structure
+            int size = readMatrixSize(basePath + File.separator + "matrix_size.txt");
+
+            try {
+                checkMatrixSize(size);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+                return;
+            }
+
             int[][] matrix = createRandomMatrix(size);
-            writeMatrixToFile("D:\\ProgramJaVa\\lab 2\\src\\original_matrix.txt", matrix);
+            writeMatrixToFile(basePath + File.separator + "original_matrix.txt", matrix);
 
             int[][] rotatedMatrix90 = rotateMatrix(matrix, 90);
             int[][] rotatedMatrix180 = rotateMatrix(matrix, 180);
@@ -16,14 +28,26 @@ public class MatrixManipulationApp {
             int[][] dividedMatrix180 = divideMatrix(rotatedMatrix180);
             int[][] dividedMatrix270 = divideMatrix(rotatedMatrix270);
 
-            writeMatrixToFile("D:\\ProgramJaVa\\lab 2\\src\\result90.txt", dividedMatrix90);
-            writeMatrixToFile("D:\\ProgramJaVa\\lab 2\\src\\result180.txt", dividedMatrix180);
-            writeMatrixToFile("D:\\ProgramJaVa\\lab 2\\src\\result270.txt", dividedMatrix270);
+            writeMatrixToFile(basePath + File.separator + "result90.txt", dividedMatrix90);
+            writeMatrixToFile(basePath + File.separator + "result180.txt", dividedMatrix180);
+            writeMatrixToFile(basePath + File.separator + "result270.txt", dividedMatrix270);
 
             System.out.println("Результаты записаны в файлы result90.txt, result180.txt и result270.txt");
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Произошла ошибка при чтении/записи файла");
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println("Произошла ошибка, введены некорректные исходные данные");
+        } catch (ArithmeticException e) {
+            e.printStackTrace();
+            System.out.println("Произошло деление на ноль во время обработки матрицы");
+        }
+    }
+
+    private static void checkMatrixSize(int size) {
+        if (size > MAX_MATRIX_SIZE) {
+            throw new IllegalArgumentException("Размер матрицы не может превышать " + MAX_MATRIX_SIZE);
         }
     }
 
@@ -35,6 +59,10 @@ public class MatrixManipulationApp {
     }
 
     private static int[][] createRandomMatrix(int size) {
+        if (size > MAX_MATRIX_SIZE) {
+            throw new IllegalArgumentException("Размер матрицы не может превышать " + MAX_MATRIX_SIZE);
+        }
+
         int[][] matrix = new int[size][size];
         Random random = new Random();
 
@@ -85,19 +113,23 @@ public class MatrixManipulationApp {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 int sum = 0;
+                boolean divideByZero = false;
 
                 for (int k = i - 1; k <= i + 1; k++) {
                     for (int l = j - 1; l <= j + 1; l++) {
                         if (k >= 0 && k < size && l >= 0 && l < size && (k != i || l != j)) {
                             sum += matrix[k][l];
+                            if (matrix[k][l] == 0) {
+                                divideByZero = true;
+                            }
                         }
                     }
                 }
 
-                if (sum == 0) {
-                    dividedMatrix[i][j] = 0;
+                if (divideByZero) {
+                    throw new ArithmeticException("Деление на ноль в позиции (" + i + ", " + j + ")");
                 } else {
-                    dividedMatrix[i][j] = matrix[i][j] / sum;
+                    dividedMatrix[i][j] = sum == 0 ? 0 : matrix[i][j] / sum;
                 }
             }
         }
