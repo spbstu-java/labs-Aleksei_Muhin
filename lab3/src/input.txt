@@ -1,1 +1,4 @@
-Dog
+read it | зачтите
+Please | пожалуйста
+work | работу
+read it Please work | зачтите пожалуйста работу
