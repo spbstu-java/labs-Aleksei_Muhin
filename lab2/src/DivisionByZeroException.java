@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class DivisionByZeroException {
+public class DivisionByZeroException extends ArithmeticException {
+    public DivisionByZeroException(String message) {
+        super(message);
+    }
 }

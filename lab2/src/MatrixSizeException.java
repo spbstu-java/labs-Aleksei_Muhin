@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class MatrixSizeException {
+public class MatrixSizeException extends IllegalArgumentException {
+    public MatrixSizeException(String message) {
+        super(message);
+    }
 }

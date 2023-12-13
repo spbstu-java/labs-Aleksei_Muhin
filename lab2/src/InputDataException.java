@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class InputDataException {
+public class InputDataException extends NumberFormatException {
+    public InputDataException(String message) {
+        super(message);
+    }
 }
